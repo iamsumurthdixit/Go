@@ -14,5 +14,9 @@ Welcome to the Go Learning and REST API Repository! This repository serves as a 
 
    ```bash
    git clone git@github.com:iamsumurthdixit/Go.git
+   ```
+2. Migrate to the repository:
+
+   ```bash
    cd Go
    ```
