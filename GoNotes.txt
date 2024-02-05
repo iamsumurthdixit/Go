@@ -1,0 +1,32 @@
+1. constants can NOT be declared using short declration syntax (:= (works only for function(local) scope))
+2. if a global and local variable have same name, in the local scope, local variable is given priority
+3. no implicit type conversion in golang (in ALL types of operations)
+4. uninitialized variables MUST be given type, otherwise error, hence, no concept of uninitialized variables
+5. := must be used for assignmet for atleast one new variable on left side
+6. no paranthesis in for loop, use curly braces to open/close for loop
+7. only unanimous functions should be declared inside main(). named functions should be outside
+8. defer executes around the surrounding function/method and multiple defer calls follow LIFO
+9. defer is written at the function/method calling and not in definition
+10. better to declare type struct outside the main() 
+11. struct comparision is done on the basis of equality of their individual fields 
+12. Don't create anonymous structs and anonymous fields
+13. to add a method to a struct, write a reciever object before the method name (Reciever) 
+14. prefer not to give index in initialization of array. (hence, creating a slice)
+15. since, pointer stores the address of a variable, instead of first creating a new pointer to a variable and then passing it as argument to a function, can simply pass the address to the function
+16. pointers can be compared using == and != , return true if they point to same variable
+17. all methods of an interface have to be implementd and it's zero value is <nil>
+18. all types implement the empty interface, interface is needed to have polymorphism and code decoupling
+19. 2 kinds of interfaces : static and dynamic 
+20. dynamic interface are used to create variables having dynamic type at (like python) and in them, type assertion using value_of_variable, ok := varibale_name(type_to_be_checked) and using type in switch
+21. the basic difference between method and normal function is that a method has (object structname) between func keyword and function name. this is called as Reciever. 
+
+func (receiverType Receiver) methodName(parameters) returnType {
+    // Method implementation
+}
+func functionName(parameters) returnType {
+    // Function implementation
+}
+22. a single interface can be implemented by multiple structs in their own way. 
+23. if creating an instance of an interface, initialize with that variable(instance) with the object/pointer to the struct implementing that interface. 
+24. an embedding interface can have any number of interfaces or simply any number of methods of those interface and even it's own methods. 
+25. the ability to work with any number of any types of structs implementing a particular interface, is considered polymorphism. so we can have the same interface methods work differently for the different implementations by their struct recievers
