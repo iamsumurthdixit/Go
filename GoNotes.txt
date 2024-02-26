@@ -30,3 +30,9 @@ func functionName(parameters) returnType {
 23. if creating an instance of an interface, initialize with that variable(instance) with the object/pointer to the struct implementing that interface. 
 24. an embedding interface can have any number of interfaces or simply any number of methods of those interface and even it's own methods. 
 25. the ability to work with any number of any types of structs implementing a particular interface, is considered polymorphism. so we can have the same interface methods work differently for the different implementations by their struct recievers
+26. slice of different struct objects can be created if they all implement the same interface. and then, can be passed to a function
+27. a goroutine can be called just by writing the go keyword before the calling fucntion. the fucntion can be anonymous. by defualt, all goroutines are part of the main goroutine. if main goroutine is halted, all the other goroutines stop. 
+28. use time module maybe to have the concurrnet behaviour of the goroutine. 
+29. prefer a channel to accept primitive data types like int string boolean or float64. reference types like slice/array/pointers can result in race conditions. so ensure proper blocking the channel.
+30. for range loop can also be used until the channel is closed, in this case, no index is returned from the range, only result 
+31. bi-directional channel can be converted to unidirectional, vice-versa not possible
