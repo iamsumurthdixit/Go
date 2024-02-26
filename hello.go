@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"sort"
 	"strings"
+	"time"
 )
 
 var globalVariable = "i am global"
@@ -734,6 +735,119 @@ func main() {
 	fmt.Println(readerwriter.Read()) // new content
 	readerwriter.Write("latest content")
 	fmt.Println(readerwriter.Read()) // latest content
+
+	// polymorphism: multiple structs implementing same interface
+
+	team_a := &teamA{
+		nameA: "java",
+		appsA: 20,
+	}
+	team_b := &teamB{
+		nameB: "python",
+		appsB: 18,
+	}
+	allteams := []employee{team_a, team_b}
+	totalapps := totalApps(allteams)
+	fmt.Println(totalapps) // 38
+
+	//----------------------------------------------------------------
+	// CONCURRENCY
+
+	// Goroutines
+	fmt.Println("main routine start----")
+	// go Aname()
+	// go Aid()
+	// time.Sleep(3000 * time.Millisecond)
+	fmt.Println("main routing end----")
+	/*
+		main routine start----
+		rohit
+		suman
+		ria
+		1
+		mike
+		2
+		3
+		4
+		main routing end----
+	*/
+
+	// creating a channel in go
+	// method 1: var channel_name chan type
+	// method 2: channel_name := make(chan type)
+
+	// send in channel: channel_name <- element
+	// receive in channel: element := <- channel_name or simply <- channel_name
+
+	// closing a channel : close()
+	// checking if channel is open/close :
+	// ele, ok := <- channel_name
+	// if ok == true, channel open
+
+	ch := make(chan int)
+	go chanfunc(ch) // calling goroutine
+	ch <- 24        // sending data in channel
+
+	strchnl := make(chan string)
+	go printchanstrs(strchnl) // calling gorouting
+
+	// recieving data while the channel is open :
+	for {
+		res, ok := <-strchnl
+		if ok == false {
+			fmt.Println("channel closed")
+			break
+		}
+		fmt.Println("channel open, res -> " + res)
+	}
+
+	// anonymous goroutine and using for-range loop to access channel
+	mychnl := make(chan string)
+
+	go func() {
+		mychnl <- "hello"
+		mychnl <- "world"
+		mychnl <- "hehe"
+		mychnl <- "lmao"
+		close(mychnl)
+	}()
+
+	// here no index, only result
+	for res := range mychnl {
+		fmt.Println(res)
+	}
+	// length of the channel using len() and capacity using cap()
+
+	dumychnl := make(chan int, 5)
+	dumychnl <- 1
+	dumychnl <- 2
+	dumychnl <- 3
+	// close(dumychnl) // writing this is optional for this case
+	fmt.Println(len(dumychnl)) // 3
+	fmt.Println(cap(dumychnl)) // 5
+
+	// unidirectional channel in Go
+	// send-only channel: make(<- chan type)
+	// receive-only channel: make(chan<- type)
+
+	// select in channel: good practice to use default:
+	// when any channel is ready to send/recieve any data, the select statement becomes active, when multiple channels are ready, select statement executes randomly
+
+	firstchannel := make(chan string)
+	secondchannel := make(chan string)
+
+	go selectfunc1(firstchannel)
+	go selectfunc2(secondchannel)
+
+	select {
+	case res1 := <-firstchannel:
+		fmt.Println(res1)
+	case res2 := <-secondchannel:
+		fmt.Println(res2)
+	}
+
+	// output of above is : channel 1 data
+
 }
 
 func display() {
@@ -991,4 +1105,80 @@ func (d Document) Read() string {
 }
 func (d *Document) Write(content string) {
 	d.content = content
+}
+
+// polymorphism :
+type employee interface {
+	display() int
+	name() string
+}
+type teamA struct {
+	nameA string
+	appsA int
+}
+type teamB struct {
+	nameB string
+	appsB int
+}
+
+func (t teamA) display() int {
+	return t.appsA
+}
+func (t teamA) name() string {
+	return t.nameA
+}
+func (t teamB) display() int {
+	return t.appsB
+}
+func (t teamB) name() string {
+	return t.nameB
+}
+func totalApps(teams []employee) int {
+	total := 0
+	for _, team := range teams {
+		total += team.display()
+	}
+	return total
+}
+
+// goroutine fucntions:
+func Aname() {
+	names := []string{"rohit", "suman", "ria", "mike"}
+	for i := 0; i < len(names); i++ {
+		time.Sleep(150 * time.Millisecond)
+		fmt.Println(names[i])
+	}
+}
+func Aid() {
+	ids := []int{1, 2, 3, 4}
+	for i := 0; i < len(ids); i++ {
+		time.Sleep(500 * time.Millisecond)
+		fmt.Println(ids[i])
+	}
+}
+
+// channel in go
+func chanfunc(ch chan int) {
+	fmt.Println(200 + <-ch)
+}
+func printchanstrs(chnl chan string) {
+	for i := 0; i < 4; i++ {
+		chnl <- "this is content"
+	}
+	close(chnl)
+}
+
+// select for channel: both goroutines sleep for the given time, when the selectfunc1 wakes up, the select becomes active and executes
+
+func selectfunc1(channel chan string) {
+	for i := 0; i < 4; i++ {
+		time.Sleep(300 * time.Millisecond)
+		channel <- "channel 1 data"
+	}
+}
+func selectfunc2(channel chan string) {
+	for i := 0; i < 4; i++ {
+		time.Sleep(700 * time.Millisecond)
+		channel <- "channel 2 data"
+	}
 }
